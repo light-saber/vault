@@ -112,8 +112,8 @@ function WikilinkPreview({ title, x, y }: { title: string; x: number; y: number 
       className="overlay-in fixed z-50 w-72 rounded-lg border border-line bg-paper p-3 shadow-xl"
       style={{ left: Math.min(x, window.innerWidth - 300), top: y }}
     >
-      <p className="font-display text-[13.5px] font-semibold">{preview.title}</p>
-      <p className="mt-1 line-clamp-4 text-[12px] leading-relaxed text-ink-soft">
+      <p className="font-display text-base font-semibold">{preview.title}</p>
+      <p className="mt-1 line-clamp-4 text-sm leading-relaxed text-ink-soft">
         {preview.text}
       </p>
     </div>,

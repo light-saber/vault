@@ -59,7 +59,7 @@ export function StatusChip({ status }: { status: string }) {
     STATUS_STYLES[status.toLowerCase()] ?? "bg-chip-gray-wash text-chip-gray";
   return (
     <span
-      className={`inline-block rounded-full px-1.5 py-px text-[10px] font-semibold uppercase tracking-wide ${style}`}
+      className={`inline-block rounded-full px-1.5 py-px text-2xs font-semibold uppercase tracking-wide ${style}`}
     >
       {status}
     </span>
@@ -68,9 +68,26 @@ export function StatusChip({ status }: { status: string }) {
 
 export function Kbd({ children }: { children: React.ReactNode }) {
   return (
-    <kbd className="rounded border border-line-strong bg-paper px-1 py-px font-ui text-[10px] text-ink-soft">
+    <kbd className="rounded border border-line-strong bg-paper px-1 py-px font-ui text-2xs text-ink-soft">
       {children}
     </kbd>
+  );
+}
+
+/** Pane title row — doubles as the window-drag region under the overlay titlebar. */
+export function PaneHeader({
+  className = "px-3",
+  children,
+}: {
+  className?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div
+      className={`titlebar-drag flex h-12 shrink-0 items-end pb-1.5 ${className}`}
+    >
+      {children}
+    </div>
   );
 }
 

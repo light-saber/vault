@@ -32,7 +32,7 @@ export function StatusBar() {
   const noteCount = entries.filter((e) => e.noteType !== "type").length;
 
   return (
-    <div className="hairline-t flex h-7 shrink-0 items-center gap-3 bg-paper-deep px-3 text-[11px] text-ink-soft">
+    <div className="hairline-t flex h-7 shrink-0 items-center gap-3 bg-paper-deep px-3 text-xs text-ink-soft">
       <span className="font-semibold tracking-wide">{vaultName}</span>
       <span className="text-ink-faint">
         {noteCount} note{noteCount === 1 ? "" : "s"}

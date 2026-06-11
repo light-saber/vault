@@ -25,31 +25,31 @@ export function SettingsModal() {
   return (
     <Modal onClose={() => setSettingsOpen(false)} width="w-[520px]">
       <div className="p-5">
-        <p className="flex items-center gap-2 text-[13px] font-bold">
+        <p className="flex items-center gap-2 text-base font-bold">
           <Settings2 size={15} className="text-accent" />
           Settings
         </p>
 
         <Section title="Vault">
           <div className="flex items-center gap-2">
-            <code className="min-w-0 flex-1 truncate rounded bg-paper-deep px-2 py-1.5 font-mono text-[11px] text-ink-soft">
+            <code className="min-w-0 flex-1 truncate rounded bg-paper-deep px-2 py-1.5 font-mono text-xs text-ink-soft">
               {settings.vaultPath}
             </code>
             <button
               onClick={() => void changeVault()}
-              className="shrink-0 rounded-md border border-line-strong px-2.5 py-1.5 text-[12px] font-semibold hover:border-accent hover:text-accent"
+              className="shrink-0 rounded-md border border-line-strong px-2.5 py-1.5 text-sm font-semibold hover:border-accent hover:text-accent"
             >
               Change Vault…
             </button>
           </div>
-          <p className="mt-1.5 text-[11.5px] text-ink-faint">
+          <p className="mt-1.5 text-xs text-ink-faint">
             Vault keeps one active vault. Changing it reloads the app with the
             new folder.
           </p>
         </Section>
 
         <Section title="Editor">
-          <label className="flex items-center justify-between text-[12.5px]">
+          <label className="flex items-center justify-between text-sm">
             Default editor mode
             <select
               value={settings.editorMode ?? "rich"}
@@ -59,13 +59,13 @@ export function SettingsModal() {
                 });
                 setRawMode(e.target.value === "raw");
               }}
-              className="rounded-md border border-line-strong bg-white px-2 py-1 text-[12px] outline-none"
+              className="rounded-md border border-line-strong bg-white px-2 py-1 text-sm outline-none"
             >
               <option value="rich">Rich text</option>
               <option value="raw">Raw Markdown</option>
             </select>
           </label>
-          <label className="mt-3 flex items-center justify-between text-[12.5px]">
+          <label className="mt-3 flex items-center justify-between text-sm">
             Zoom
             <span className="flex items-center gap-2">
               <input
@@ -97,14 +97,14 @@ export function SettingsModal() {
             value={settings.autoSyncMinutes ?? 10}
             onChange={(n) => void patchSettings({ autoSyncMinutes: n })}
           />
-          <p className="mt-1.5 text-[11.5px] text-ink-faint">
+          <p className="mt-1.5 text-xs text-ink-faint">
             Bring your own remote: add one with{" "}
             <code className="font-mono">git remote add origin …</code> inside
             the vault folder.
           </p>
         </Section>
 
-        <p className="mt-5 border-t border-line pt-3 text-[11px] text-ink-faint">
+        <p className="mt-5 border-t border-line pt-3 text-xs text-ink-faint">
           Vault 0.1.0 — local-first, plain Markdown, AGPL-3.0. Your notes never
           leave this machine unless you push them.
         </p>
@@ -116,7 +116,7 @@ export function SettingsModal() {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="mt-5">
-      <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.12em] text-ink-faint">
+      <p className="mb-2 text-2xs font-bold uppercase tracking-[0.12em] text-ink-faint">
         {title}
       </p>
       {children}
@@ -134,7 +134,7 @@ function NumberRow({
   onChange: (n: number) => void;
 }) {
   return (
-    <label className="mt-2 flex items-center justify-between text-[12.5px]">
+    <label className="mt-2 flex items-center justify-between text-sm">
       {label}
       <input
         type="number"
@@ -142,7 +142,7 @@ function NumberRow({
         max={120}
         value={value}
         onChange={(e) => onChange(Math.max(1, Number(e.target.value) || 1))}
-        className="w-16 rounded-md border border-line-strong bg-white px-2 py-1 text-right text-[12px] outline-none focus:border-accent"
+        className="w-16 rounded-md border border-line-strong bg-white px-2 py-1 text-right text-sm outline-none focus:border-accent"
       />
     </label>
   );

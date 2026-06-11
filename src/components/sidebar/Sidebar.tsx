@@ -14,7 +14,7 @@ import {
 } from "../../lib/filtering";
 import type { Filter } from "../../lib/types";
 import { useVault } from "../../store/vaultStore";
-import { typeColorClass, typeIcon } from "../ui";
+import { PaneHeader, typeColorClass, typeIcon } from "../ui";
 
 export function Sidebar() {
   const entries = useVault((s) => s.entries);
@@ -30,8 +30,8 @@ export function Sidebar() {
 
   return (
     <div className="flex h-full flex-col bg-paper-deep">
-      <div className="titlebar-drag flex h-12 shrink-0 items-end px-4 pb-1.5 pl-[84px]">
-        <span className="font-display text-[15px] font-semibold tracking-tight">
+      <PaneHeader className="px-4 pl-[84px]">
+        <span className="font-display text-xl font-semibold tracking-tight">
           Vault
         </span>
         <span className="flex-1" />
@@ -42,7 +42,7 @@ export function Sidebar() {
         >
           <Search size={14} />
         </button>
-      </div>
+      </PaneHeader>
 
       <div className="flex-1 overflow-y-auto px-2 pb-4">
         <FilterRow
@@ -75,7 +75,7 @@ export function Sidebar() {
 
         {(defs.length > 0 || adhoc.length > 0) && (
           <div className="mt-5">
-            <p className="px-2 pb-1 text-[10px] font-bold uppercase tracking-[0.12em] text-ink-faint">
+            <p className="px-2 pb-1 text-2xs font-bold uppercase tracking-[0.12em] text-ink-faint">
               Types
             </p>
             {defs.map((def) => (
@@ -125,7 +125,7 @@ function FilterRow({
   return (
     <button
       onClick={onClick}
-      className={`flex w-full items-center gap-2 rounded-md px-2 py-[5px] text-[13px] transition-colors ${
+      className={`flex w-full items-center gap-2 rounded-md px-2 py-[5px] text-base transition-colors ${
         active
           ? "bg-paper-sunken font-semibold text-ink"
           : "text-ink-soft hover:bg-paper-sunken/60"
@@ -134,7 +134,7 @@ function FilterRow({
       <span className={active ? "text-accent" : "text-ink-faint"}>{icon}</span>
       <span className="flex-1 text-left">{label}</span>
       {count !== undefined && count > 0 && (
-        <span className="text-[11px] tabular-nums text-ink-faint">{count}</span>
+        <span className="text-xs tabular-nums text-ink-faint">{count}</span>
       )}
     </button>
   );
@@ -156,7 +156,7 @@ function TypeSection(props: {
     <div>
       <button
         onClick={() => props.setFilter({ kind: "type", type: props.slug })}
-        className={`group flex w-full items-center gap-2 rounded-md px-2 py-[5px] text-[13px] transition-colors ${
+        className={`group flex w-full items-center gap-2 rounded-md px-2 py-[5px] text-base transition-colors ${
           active
             ? "bg-paper-sunken font-semibold text-ink"
             : "text-ink-soft hover:bg-paper-sunken/60"
@@ -172,7 +172,7 @@ function TypeSection(props: {
         />
         <Icon size={14} className={typeColorClass(props.color)} />
         <span className="flex-1 text-left capitalize">{props.title}</span>
-        <span className="text-[11px] tabular-nums text-ink-faint">
+        <span className="text-xs tabular-nums text-ink-faint">
           {props.count}
         </span>
       </button>

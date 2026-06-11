@@ -30,7 +30,7 @@ export function QuickOpen() {
           >
             <FileText size={13} className="shrink-0 text-ink-faint" />
             <span className="min-w-0 flex-1 truncate">{e.title}</span>
-            <span className="shrink-0 text-[10.5px] tabular-nums text-ink-faint">
+            <span className="shrink-0 text-2xs tabular-nums text-ink-faint">
               {relativeDate(e.modified)}
             </span>
           </Command.Item>

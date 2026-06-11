@@ -65,7 +65,7 @@ export function CommandPalette() {
           <Command.Item key={a.label} onSelect={run(a.fn)} className="palette-item">
             <span className="text-ink-faint">{a.icon}</span>
             <span className="flex-1">{a.label}</span>
-            {a.kbd && <span className="text-[10.5px] text-ink-faint">{a.kbd}</span>}
+            {a.kbd && <span className="text-2xs text-ink-faint">{a.kbd}</span>}
           </Command.Item>
         ))}
       </Command.Group>
@@ -81,7 +81,7 @@ export function CommandPalette() {
               className="palette-item"
             >
               <span className="flex-1 truncate">{e.title}</span>
-              <span className="truncate text-[10.5px] text-ink-faint">
+              <span className="truncate text-2xs text-ink-faint">
                 {fileStem(e.path) !== e.title ? e.path : ""}
               </span>
             </Command.Item>
@@ -114,10 +114,10 @@ export function PaletteShell({
         <Command.Input
           autoFocus
           placeholder={placeholder}
-          className="hairline-b w-full bg-transparent px-4 py-3 text-[14px] outline-none placeholder:text-ink-faint"
+          className="hairline-b w-full bg-transparent px-4 py-3 text-lg outline-none placeholder:text-ink-faint"
         />
-        <Command.List className="max-h-[340px] overflow-y-auto p-1.5 [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1 [&_[cmdk-group-heading]]:text-[10px] [&_[cmdk-group-heading]]:font-bold [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-[0.12em] [&_[cmdk-group-heading]]:text-ink-faint [&_[cmdk-item]]:flex [&_[cmdk-item]]:cursor-pointer [&_[cmdk-item]]:items-center [&_[cmdk-item]]:gap-2.5 [&_[cmdk-item]]:rounded-md [&_[cmdk-item]]:px-2.5 [&_[cmdk-item]]:py-[7px] [&_[cmdk-item]]:text-[13px] [&_[cmdk-item][data-selected=true]]:bg-paper-sunken [&_[cmdk-item][data-selected=true]]:text-ink">
-          <Command.Empty className="px-3 py-6 text-center text-[12.5px] text-ink-faint">
+        <Command.List className="max-h-[340px] overflow-y-auto p-1.5 [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1 [&_[cmdk-group-heading]]:text-2xs [&_[cmdk-group-heading]]:font-bold [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-[0.12em] [&_[cmdk-group-heading]]:text-ink-faint [&_[cmdk-item]]:flex [&_[cmdk-item]]:cursor-pointer [&_[cmdk-item]]:items-center [&_[cmdk-item]]:gap-2.5 [&_[cmdk-item]]:rounded-md [&_[cmdk-item]]:px-2.5 [&_[cmdk-item]]:py-[7px] [&_[cmdk-item]]:text-base [&_[cmdk-item][data-selected=true]]:bg-paper-sunken [&_[cmdk-item][data-selected=true]]:text-ink">
+          <Command.Empty className="px-3 py-6 text-center text-sm text-ink-faint">
             No results.
           </Command.Empty>
           {children}

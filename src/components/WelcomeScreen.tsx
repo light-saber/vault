@@ -50,13 +50,13 @@ export function WelcomeScreen() {
   return (
     <div className="titlebar-drag flex h-full flex-col items-center justify-center bg-paper-deep">
       <div className="fade-up w-[440px]">
-        <p className="font-display text-[15px] italic text-ink-faint">
+        <p className="font-display text-xl italic text-ink-faint">
           one vault, one window
         </p>
         <h1 className="mt-1 font-display text-[64px] font-medium leading-none tracking-tight">
           Vault
         </h1>
-        <p className="mt-3 max-w-[360px] text-[13.5px] leading-relaxed text-ink-soft">
+        <p className="mt-3 max-w-[360px] text-base leading-relaxed text-ink-soft">
           A local-first knowledge base. Plain Markdown files, versioned with
           git, owned by you.
         </p>
@@ -84,7 +84,7 @@ export function WelcomeScreen() {
           </div>
         ) : (
           <div className="mt-10 rounded-lg border border-line bg-paper p-4">
-            <label className="text-[11px] font-semibold uppercase tracking-wider text-ink-faint">
+            <label className="text-xs font-semibold uppercase tracking-wider text-ink-faint">
               Vault name
             </label>
             <input
@@ -92,21 +92,21 @@ export function WelcomeScreen() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && void confirmCreate()}
-              className="mt-1.5 w-full rounded-md border border-line-strong bg-white px-3 py-2 font-display text-[16px] outline-none focus:border-accent"
+              className="mt-1.5 w-full rounded-md border border-line-strong bg-white px-3 py-2 font-display text-xl outline-none focus:border-accent"
             />
-            <p className="mt-2 truncate text-[12px] text-ink-faint">
+            <p className="mt-2 truncate text-sm text-ink-faint">
               {creating.parent}/{name.trim() || "…"}
             </p>
             <div className="mt-4 flex gap-2">
               <button
                 onClick={() => void confirmCreate()}
-                className="flex items-center gap-1.5 rounded-md bg-accent px-3.5 py-1.5 text-[13px] font-semibold text-white hover:bg-accent-deep"
+                className="flex items-center gap-1.5 rounded-md bg-accent px-3.5 py-1.5 text-base font-semibold text-white hover:bg-accent-deep"
               >
                 Create vault <ArrowRight size={14} />
               </button>
               <button
                 onClick={() => setCreating(null)}
-                className="rounded-md px-3 py-1.5 text-[13px] text-ink-soft hover:bg-paper-sunken"
+                className="rounded-md px-3 py-1.5 text-base text-ink-soft hover:bg-paper-sunken"
               >
                 Back
               </button>
@@ -115,7 +115,7 @@ export function WelcomeScreen() {
         )}
 
         {error && (
-          <p className="mt-4 rounded-md bg-accent-wash px-3 py-2 text-[12.5px] text-accent-deep">
+          <p className="mt-4 rounded-md bg-accent-wash px-3 py-2 text-sm text-accent-deep">
             {error}
           </p>
         )}
@@ -144,8 +144,8 @@ function WelcomeAction({
         {icon}
       </span>
       <span className="flex-1">
-        <span className="block text-[13.5px] font-semibold">{title}</span>
-        <span className="block text-[12px] text-ink-faint">{hint}</span>
+        <span className="block text-base font-semibold">{title}</span>
+        <span className="block text-sm text-ink-faint">{hint}</span>
       </span>
       <ArrowRight
         size={14}

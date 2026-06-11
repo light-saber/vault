@@ -1,11 +1,8 @@
 import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
 import { languages } from "@codemirror/language-data";
-import { EditorView } from "@uiw/react-codemirror";
-import CodeMirror from "@uiw/react-codemirror";
+import CodeMirror, { EditorView } from "@uiw/react-codemirror";
 import { useCallback } from "react";
 import { useDebouncedSave } from "../../hooks/useDebouncedSave";
-import { wordCount } from "../../lib/wikilinks";
-import { useVault } from "../../store/vaultStore";
 
 const theme = EditorView.theme({
   "&": { backgroundColor: "transparent" },
@@ -13,17 +10,18 @@ const theme = EditorView.theme({
   ".cm-activeLine": { backgroundColor: "transparent" },
 });
 
+const extensions = [
+  markdown({ base: markdownLanguage, codeLanguages: languages }),
+  EditorView.lineWrapping,
+];
+
 /** Raw Markdown editor (CodeMirror 6) with the same 500ms debounced save. */
 export function RawEditor({ initialBody }: { initialBody: string }) {
   const { schedule } = useDebouncedSave();
-  const setWordCount = useVault((s) => s.setWordCount);
 
   const onChange = useCallback(
-    (value: string) => {
-      setWordCount(wordCount(value));
-      schedule(value);
-    },
-    [schedule, setWordCount],
+    (value: string) => schedule(() => value),
+    [schedule],
   );
 
   return (
@@ -34,10 +32,7 @@ export function RawEditor({ initialBody }: { initialBody: string }) {
         autoFocus
         height="100%"
         theme={theme}
-        extensions={[
-          markdown({ base: markdownLanguage, codeLanguages: languages }),
-          EditorView.lineWrapping,
-        ]}
+        extensions={extensions}
         basicSetup={{
           lineNumbers: false,
           foldGutter: false,

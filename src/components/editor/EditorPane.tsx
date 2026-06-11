@@ -1,8 +1,16 @@
+import { lazy, Suspense } from "react";
 import { useVault } from "../../store/vaultStore";
 import { Kbd } from "../ui";
 import { Breadcrumb } from "./Breadcrumb";
-import { RawEditor } from "./RawEditor";
-import { RichEditor } from "./RichEditor";
+
+// Loaded on demand: keeps BlockNote/Mantine and CodeMirror out of the
+// startup bundle, and only the active editor implementation in memory.
+const RichEditor = lazy(() =>
+  import("./RichEditor").then((m) => ({ default: m.RichEditor })),
+);
+const RawEditor = lazy(() =>
+  import("./RawEditor").then((m) => ({ default: m.RawEditor })),
+);
 
 export function EditorPane({ standalone = false }: { standalone?: boolean }) {
   const note = useVault((s) => s.note);
@@ -15,10 +23,10 @@ export function EditorPane({ standalone = false }: { standalone?: boolean }) {
       <div className="editor-surface flex h-full flex-col">
         <div className="titlebar-drag h-12 shrink-0" />
         <div className="flex flex-1 flex-col items-center justify-center pb-24">
-          <p className="font-display text-[26px] italic text-ink-faint">
+          <p className="font-display text-3xl italic text-ink-faint">
             nothing open
           </p>
-          <div className="mt-6 space-y-2 text-[12.5px] text-ink-soft">
+          <div className="mt-6 space-y-2 text-base text-ink-soft">
             <p>
               <Kbd>⌘P</Kbd> jump to a note
             </p>
@@ -38,11 +46,13 @@ export function EditorPane({ standalone = false }: { standalone?: boolean }) {
     <div className="editor-surface flex h-full flex-col">
       <Breadcrumb standalone={standalone} />
       <div className="min-h-0 flex-1 overflow-y-auto pt-8" key={`${noteKey}-${rawMode}`}>
-        {rawMode ? (
-          <RawEditor initialBody={note.body} />
-        ) : (
-          <RichEditor initialBody={note.body} />
-        )}
+        <Suspense fallback={null}>
+          {rawMode ? (
+            <RawEditor initialBody={note.body} />
+          ) : (
+            <RichEditor initialBody={note.body} />
+          )}
+        </Suspense>
       </div>
     </div>
   );

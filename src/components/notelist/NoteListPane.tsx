@@ -10,7 +10,7 @@ import type { SortKey, VaultEntry } from "../../lib/types";
 import { openNoteWindow } from "../../lib/windows";
 import { useVault } from "../../store/vaultStore";
 import { PulseView } from "../pulse/PulseView";
-import { StatusChip } from "../ui";
+import { PaneHeader, StatusChip } from "../ui";
 import { SearchPanel } from "./SearchPanel";
 
 const SORTS: { key: SortKey; label: string }[] = [
@@ -44,18 +44,18 @@ export function NoteListPane() {
 
   return (
     <div className="flex h-full flex-col bg-paper">
-      <div className="titlebar-drag flex h-12 shrink-0 items-end px-3 pb-1.5">
-        <span className="text-[13px] font-bold tracking-tight">
+      <PaneHeader>
+        <span className="text-base font-bold tracking-tight">
           {filterLabel(filter, defs)}
         </span>
-        <span className="ml-2 pb-px text-[11px] tabular-nums text-ink-faint">
+        <span className="ml-2 pb-px text-xs tabular-nums text-ink-faint">
           {list.length}
         </span>
         <span className="flex-1" />
         <button
           onClick={cycleSort}
           title={`Sorted by ${sort} — click to change`}
-          className="flex items-center gap-1 rounded px-1.5 py-1 text-[11px] text-ink-soft hover:bg-paper-sunken"
+          className="flex items-center gap-1 rounded px-1.5 py-1 text-xs text-ink-soft hover:bg-paper-sunken"
         >
           <ArrowUpDown size={11} />
           {SORTS.find((s) => s.key === sort)?.label}
@@ -67,11 +67,11 @@ export function NoteListPane() {
         >
           <Plus size={15} />
         </button>
-      </div>
+      </PaneHeader>
 
       <div className="flex-1 overflow-y-auto px-2 pb-3">
         {list.length === 0 && (
-          <p className="px-3 pt-8 text-center text-[12.5px] text-ink-faint">
+          <p className="px-3 pt-8 text-center text-sm text-ink-faint">
             {filter.kind === "changes"
               ? "No uncommitted changes."
               : "No notes here yet."}
@@ -116,15 +116,15 @@ function NoteListItem({
         <span className="absolute inset-y-2 left-0 w-[3px] rounded-full bg-accent" />
       )}
       <span className="flex items-baseline gap-2">
-        <span className="min-w-0 flex-1 truncate font-display text-[14.5px] font-semibold leading-snug">
+        <span className="min-w-0 flex-1 truncate font-display text-lg font-semibold leading-snug">
           {entry.title}
         </span>
-        <span className="shrink-0 text-[10.5px] tabular-nums text-ink-faint">
+        <span className="shrink-0 text-2xs tabular-nums text-ink-faint">
           {relativeDate(entry.modified)}
         </span>
       </span>
       <span className="mt-0.5 flex items-center gap-2">
-        <span className="min-w-0 flex-1 truncate text-[12px] leading-snug text-ink-soft">
+        <span className="min-w-0 flex-1 truncate text-sm leading-snug text-ink-soft">
           {entry.snippet || <span className="italic text-ink-faint">Empty note</span>}
         </span>
         {entry.status && <StatusChip status={entry.status} />}

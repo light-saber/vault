@@ -6,6 +6,7 @@ import { entriesOfType } from "../../lib/filtering";
 import type { CommitInfo, VaultEntry } from "../../lib/types";
 import { backlinksFor, fileStem, resolveWikilink } from "../../lib/wikilinks";
 import { useVault } from "../../store/vaultStore";
+import { PaneHeader } from "../ui";
 
 export function Inspector() {
   const entries = useVault((s) => s.entries);
@@ -17,7 +18,7 @@ export function Inspector() {
     return (
       <div className="flex h-full flex-col bg-paper-deep">
         <div className="titlebar-drag h-12 shrink-0" />
-        <p className="px-4 pt-6 text-center text-[12px] text-ink-faint">
+        <p className="px-4 pt-6 text-center text-sm text-ink-faint">
           Select a note to inspect its metadata.
         </p>
       </div>
@@ -29,9 +30,9 @@ export function Inspector() {
 
   return (
     <div className="flex h-full flex-col overflow-y-auto bg-paper-deep">
-      <div className="titlebar-drag flex h-12 shrink-0 items-end px-4 pb-1.5">
-        <span className="text-[13px] font-bold tracking-tight">Inspector</span>
-      </div>
+      <PaneHeader className="px-4">
+        <span className="text-base font-bold tracking-tight">Inspector</span>
+      </PaneHeader>
 
       <div className="space-y-5 px-4 pb-6">
         <PropertiesSection key={entry.path} entry={entry} />
@@ -67,7 +68,7 @@ export function Inspector() {
 
 function SectionHeading({ icon, label }: { icon: React.ReactNode; label: string }) {
   return (
-    <p className="mb-1.5 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-ink-faint">
+    <p className="mb-1.5 flex items-center gap-1.5 text-2xs font-bold uppercase tracking-[0.12em] text-ink-faint">
       {icon}
       {label}
     </p>
@@ -75,7 +76,7 @@ function SectionHeading({ icon, label }: { icon: React.ReactNode; label: string 
 }
 
 function Empty({ children }: { children: React.ReactNode }) {
-  return <p className="text-[12px] italic text-ink-faint">{children}</p>;
+  return <p className="text-sm italic text-ink-faint">{children}</p>;
 }
 
 function NoteLink({ entry }: { entry: VaultEntry }) {
@@ -83,7 +84,7 @@ function NoteLink({ entry }: { entry: VaultEntry }) {
   return (
     <button
       onClick={() => void openNote(entry.path)}
-      className="block w-full truncate rounded px-1.5 py-1 text-left text-[12.5px] text-ink hover:bg-paper-sunken hover:text-accent"
+      className="block w-full truncate rounded px-1.5 py-1 text-left text-sm text-ink hover:bg-paper-sunken hover:text-accent"
     >
       {entry.title}
     </button>
@@ -149,12 +150,12 @@ function PropertiesSection({ entry }: { entry: VaultEntry }) {
             if (e.key === "Escape") setAdding(false);
           }}
           placeholder="property name"
-          className="mt-1 w-full rounded border border-line-strong bg-white px-2 py-1 text-[12px] outline-none focus:border-accent"
+          className="mt-1 w-full rounded border border-line-strong bg-white px-2 py-1 text-sm outline-none focus:border-accent"
         />
       ) : (
         <button
           onClick={() => setAdding(true)}
-          className="mt-1.5 flex items-center gap-1 text-[11.5px] text-ink-faint hover:text-accent"
+          className="mt-1.5 flex items-center gap-1 text-xs text-ink-faint hover:text-accent"
         >
           <Plus size={11} /> Add property
         </button>
@@ -180,7 +181,7 @@ function PropertyRow({
 
   return (
     <div className="group flex items-center gap-1.5">
-      <span className="w-[88px] shrink-0 truncate text-[11.5px] font-medium text-ink-soft">
+      <span className="w-[88px] shrink-0 truncate text-xs font-medium text-ink-soft">
         {name}
       </span>
       <input
@@ -191,7 +192,7 @@ function PropertyRow({
           if (e.key === "Enter") (e.target as HTMLInputElement).blur();
           if (e.key === "Escape") setDraft(display);
         }}
-        className="min-w-0 flex-1 rounded border border-transparent bg-transparent px-1.5 py-0.5 text-[12px] outline-none hover:border-line focus:border-accent focus:bg-white"
+        className="min-w-0 flex-1 rounded border border-transparent bg-transparent px-1.5 py-0.5 text-sm outline-none hover:border-line focus:border-accent focus:bg-white"
       />
       <button
         onClick={onRemove}
@@ -246,14 +247,14 @@ function RelationSection({
       {nonEmpty.length === 0 && <Empty>No outgoing links.</Empty>}
       {nonEmpty.map((g) => (
         <div key={g.label} className="mb-1.5">
-          <p className="text-[10.5px] font-semibold text-ink-faint">{g.label}</p>
+          <p className="text-2xs font-semibold text-ink-faint">{g.label}</p>
           {g.targets.map((t) => {
             const target = resolveWikilink(entries, t);
             return (
               <button
                 key={t}
                 onClick={() => target && void openNote(target.path)}
-                className={`block w-full truncate rounded px-1.5 py-0.5 text-left text-[12.5px] ${
+                className={`block w-full truncate rounded px-1.5 py-0.5 text-left text-sm ${
                   target
                     ? "text-ink hover:bg-paper-sunken hover:text-accent"
                     : "cursor-default text-ink-faint"
@@ -335,11 +336,11 @@ function HistorySection({ path }: { path: string }) {
             onClick={() => void showDiff(c.hash)}
             className="flex w-full items-baseline gap-2 rounded px-1.5 py-1 text-left hover:bg-paper-sunken"
           >
-            <span className="min-w-0 flex-1 truncate text-[12px]">{c.message}</span>
-            <span className="shrink-0 font-mono text-[10px] text-ink-faint">
+            <span className="min-w-0 flex-1 truncate text-sm">{c.message}</span>
+            <span className="shrink-0 font-mono text-2xs text-ink-faint">
               {c.shortHash}
             </span>
-            <span className="shrink-0 text-[10.5px] text-ink-faint">
+            <span className="shrink-0 text-2xs text-ink-faint">
               {relativeDate(c.timestamp)}
             </span>
           </button>

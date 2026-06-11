@@ -1,4 +1,3 @@
-import "@blocknote/core/fonts/inter.css";
 import { filterSuggestionItems } from "@blocknote/core";
 import { BlockNoteView } from "@blocknote/mantine";
 import "@blocknote/mantine/style.css";
@@ -8,6 +7,7 @@ import {
   type DefaultReactSuggestionItem,
 } from "@blocknote/react";
 import { useCallback, useEffect, useRef } from "react";
+import { useDebouncedSave } from "../../hooks/useDebouncedSave";
 import { ipc } from "../../lib/ipc";
 import {
   injectWikilinksIntoBlocks,
@@ -20,8 +20,7 @@ import { vaultSchema } from "./wikilink";
 export function RichEditor({ initialBody }: { initialBody: string }) {
   const editor = useCreateBlockNote({ schema: vaultSchema });
   const loaded = useRef(false);
-  const timer = useRef<number | null>(null);
-  const dirty = useRef(false);
+  const { schedule } = useDebouncedSave();
 
   useEffect(() => {
     let cancelled = false;
@@ -42,39 +41,13 @@ export function RichEditor({ initialBody }: { initialBody: string }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editor]);
 
-  const flush = useCallback(async () => {
-    if (timer.current) {
-      window.clearTimeout(timer.current);
-      timer.current = null;
-    }
-    if (!dirty.current) return;
-    dirty.current = false;
-    const markdown = postProcessWikilinks(
-      await editor.blocksToMarkdownLossy(editor.document),
-    );
-    useVault.getState().setWordCount(wordCount(markdown));
-    await useVault.getState().saveBody(markdown);
-  }, [editor]);
-
-  // Debounced 500ms save-on-change; flushed on Cmd+S, quit and unmount.
   const onChange = useCallback(() => {
     if (!loaded.current) return;
-    dirty.current = true;
-    useVault.getState().setSaveStatus("dirty");
-    if (timer.current) window.clearTimeout(timer.current);
-    timer.current = window.setTimeout(() => void flush(), 500);
-  }, [flush]);
-
-  useEffect(() => {
-    const onFlush = () => void flush();
-    window.addEventListener("vault:flush-save", onFlush);
-    window.addEventListener("pagehide", onFlush);
-    return () => {
-      window.removeEventListener("vault:flush-save", onFlush);
-      window.removeEventListener("pagehide", onFlush);
-      void flush();
-    };
-  }, [flush]);
+    // conversion runs once at flush time, not per keystroke
+    schedule(async () =>
+      postProcessWikilinks(await editor.blocksToMarkdownLossy(editor.document)),
+    );
+  }, [editor, schedule]);
 
   return (
     <BlockNoteView

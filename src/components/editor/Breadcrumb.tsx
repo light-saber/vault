@@ -78,10 +78,10 @@ export function Breadcrumb({ standalone = false }: { standalone?: boolean }) {
           if (e.key === "Escape") setTitle(entry?.title ?? "");
         }}
         placeholder="Untitled"
-        className="mx-1 min-w-0 flex-1 truncate bg-transparent font-display text-[15px] font-semibold tracking-tight outline-none placeholder:text-ink-faint"
+        className="mx-1 min-w-0 flex-1 truncate bg-transparent font-display text-xl font-semibold tracking-tight outline-none placeholder:text-ink-faint"
       />
 
-      <span className="mr-1 flex items-center gap-2 text-[11px] tabular-nums text-ink-faint">
+      <span className="mr-1 flex items-center gap-2 text-xs tabular-nums text-ink-faint">
         <span>{words} words</span>
         <SaveIndicator status={saveStatus} />
       </span>
