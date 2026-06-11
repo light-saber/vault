@@ -118,10 +118,24 @@ my-vault/
 | ⌘[ / ⌘] | Back / forward | ⌘⇧O | Note in new window |
 | `[[` | Wikilink autocomplete | ⌘, | Settings |
 
-## Getting started
+## Installation
 
-Prebuilt binaries are not published yet — building from source takes about two
-minutes:
+**[⬇ Download the latest release](https://github.com/light-saber/vault/releases/latest)**
+— grab `Vault_x.y.z_universal.dmg` (works on Apple Silicon and Intel Macs),
+open it, and drag **Vault** into Applications.
+
+> **First launch:** Vault is not yet code-signed, so macOS will warn you that
+> it can't verify the developer. Either **right-click the app → Open → Open**,
+> or run this once in Terminal:
+>
+> ```sh
+> xattr -cr /Applications/Vault.app
+> ```
+
+New versions are published on the [Releases](https://github.com/light-saber/vault/releases)
+page — every `v*` tag is built automatically by CI.
+
+### Building from source
 
 ```sh
 # prerequisites: Rust (stable), Node 20+, pnpm, git
