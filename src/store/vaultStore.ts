@@ -122,6 +122,7 @@ export const useVault = create<VaultState>((set, get) => {
     lastEditAt: 0,
 
     init: async () => {
+      if (get().booted) return;
       let settings = defaultSettings;
       try {
         settings = { ...defaultSettings, ...(await ipc.getSettings()) };
