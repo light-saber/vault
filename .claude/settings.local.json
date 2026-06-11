@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(textutil -convert txt vault_prd.docx -output /tmp/vault_prd.txt)",
+      "Read(//tmp/**)",
+      "Bash(pnpm --version)",
+      "Bash(cargo --version)",
+      "Bash(rustc --version)",
+      "Bash(git --version)",
+      "Bash(xcode-select -p)",
+      "Read(//Users/apple/.cargo/**)",
+      "Bash(npm --version)"
+    ]
+  }
+}
