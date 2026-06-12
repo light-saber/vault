@@ -137,8 +137,20 @@ page — every `v*` tag is built automatically by CI.
 
 ### Building from source
 
+Prerequisites: Rust (stable), Node 20+, pnpm, git, and on macOS the Xcode
+Command Line Tools. On macOS the easiest way to get them all is Homebrew:
+
 ```sh
-# prerequisites: Rust (stable), Node 20+, pnpm, git
+brew install rust node pnpm
+xcode-select --install   # if not already installed
+```
+
+> **Note:** if `pnpm tauri dev` fails with
+> `failed to run 'cargo metadata' command to get workspace directory`,
+> the Tauri CLI can't find `cargo` — install Rust as above (Homebrew puts
+> it on PATH automatically) and re-run from a fresh terminal.
+
+```sh
 git clone https://github.com/light-saber/vault.git
 cd vault
 pnpm install
