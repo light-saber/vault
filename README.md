@@ -3,6 +3,7 @@
 > One vault, one window. A local-first personal knowledge base built on plain Markdown and git.
 
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL%203.0-b14e33.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/version-0.2.0-211e19.svg)](https://github.com/light-saber/vault/releases/latest)
 [![Platform](https://img.shields.io/badge/Platform-macOS%2012%2B-211e19.svg)](#getting-started)
 [![Built with Tauri](https://img.shields.io/badge/Built%20with-Tauri%202-24C8DB.svg)](https://tauri.app)
 [![React 19](https://img.shields.io/badge/React-19-087EA4.svg)](https://react.dev)
@@ -45,6 +46,9 @@ they work with any editor, with Pandoc, Hugo, Jekyll, Quartz, or just `grep`.
 - **Note types** — a note with `type: type` defines a type (icon, color);
   notes tagged with that type group in the sidebar. Types are lenses, not
   schemas — no required fields, ever.
+- **Starred notes** — star any note with one tap; a dedicated Starred filter
+  in the sidebar lets you surface your most important notes instantly. Stars
+  are stored as `starred: true` in frontmatter so they're portable.
 - **Inspector** — editable frontmatter properties, outgoing relations,
   backlinks, per-file git history with inline diffs, and an instances list
   for type notes.
@@ -53,15 +57,48 @@ they work with any editor, with Pandoc, Hugo, Jekyll, Quartz, or just `grep`.
 - **Command palette & quick open** — every app action searchable (⌘K), jump
   to any note (⌘P).
 - **AutoGit** — after a configurable idle period your changes are committed
-  as “Updated N note(s)”. Manual commits with custom messages via ⌘⇧G.
+  as "Updated N note(s)". Manual commits with custom messages via ⌘⇧G.
 - **Sync, your way** — add any git remote (GitHub, GitLab, Gitea,
   self-hosted). Vault pulls with rebase + autostash, pushes, and shows sync
   state in the status bar. No proprietary sync server, ever.
-- **Pulse** — a chronological, day-grouped feed of your vault’s git activity.
+- **Pulse** — a chronological, day-grouped feed of your vault's git activity.
 - **Multi-window** — open notes in focused editor-only windows
   (⌘⇧O or ⌘⇧-click).
 - **Auto-save** — debounced 500 ms save-on-change; notes are never lost on
   quit.
+- **Web/PWA access** — a self-hosted Rust server exposes the full API; the
+  web build is a mobile-optimised PWA you can add to your iPhone home screen.
+  The desktop app and web app share the same vault on disk.
+
+## Access from anywhere — Web & iPhone
+
+Vault ships a lightweight [Axum](https://github.com/tokio-rs/axum) server
+(`server/`) that exposes the same API the desktop app uses. Deploy it on any
+VPS to get secure, always-on access to your vault from any browser — and add
+it to your iPhone home screen as a PWA.
+
+<table>
+<tr>
+<td align="center"><b>Note list</b></td>
+<td align="center"><b>Editor</b></td>
+</tr>
+<tr>
+<td><img src="Screenshots/mobile-list.png" width="280" alt="Mobile note list with filter pills and note cards"/></td>
+<td><img src="Screenshots/mobile-editor.png" width="280" alt="Mobile editor with back button, title, star and word count"/></td>
+</tr>
+</table>
+
+The mobile layout activates automatically on screens narrower than 768 px:
+
+- **Filter pills** — swipe through All · Inbox · Starred · Changes · Types
+- **Note cards** — always-visible star button, snippet and relative date
+- **Full-screen editor** — back arrow · inline title rename · star · delete
+- **Bottom bar** — note count, sync status, settings
+- **Safe-area aware** — respects iPhone notch and home-bar insets
+
+See [`server/DEPLOY.md`](server/DEPLOY.md) for the full deployment guide
+(systemd service, nginx TLS termination, self-signed cert for full PWA
+features).
 
 ## The note format
 
@@ -72,6 +109,7 @@ type: project
 status: active
 tags:
   - pkm
+starred: true
 belongs_to: "[[Areas of Life]]"
 related_to:
   - "[[Knowledge Management]]"
@@ -88,6 +126,7 @@ All frontmatter is optional. The fields Vault understands:
 | `type` | Note type — drives sidebar grouping |
 | `status` | Lifecycle chip in the note list (`active`, `done`, …) |
 | `tags` | Free-form tags |
+| `starred` | `true` to pin in the Starred filter |
 | `url` | External link for the note |
 | `belongs_to` | Parent relationship (wikilink) |
 | `related_to` | Sibling relationships (array of wikilinks) |
@@ -158,6 +197,19 @@ pnpm tauri dev        # run in development
 pnpm tauri build      # build a release .app / .dmg
 ```
 
+#### Building the web/server version
+
+```sh
+# Build the web frontend
+pnpm build:web        # output → dist-web/
+
+# Build the server binary
+cd server
+cargo build --release # output → server/target/release/vault-server
+```
+
+See [`server/DEPLOY.md`](server/DEPLOY.md) for deployment instructions.
+
 App settings persist at `~/.config/com.vault.app/settings.json`. Deleting that
 file returns the app to onboarding (your notes are untouched).
 
@@ -168,7 +220,7 @@ cd /path/to/your-vault
 git remote add origin git@github.com:you/my-vault.git
 ```
 
-That’s it — Vault picks up the remote, auto-syncs on an interval you control,
+That's it — Vault picks up the remote, auto-syncs on an interval you control,
 and surfaces conflicts in the status bar.
 
 ## Architecture
@@ -176,6 +228,7 @@ and surfaces conflicts in the status bar.
 | Layer | Technology |
 | --- | --- |
 | Desktop shell | [Tauri 2](https://tauri.app) (Rust backend + system WebView) |
+| Web server | [Axum](https://github.com/tokio-rs/axum) + [tower-http](https://github.com/tower-rs/tower-http) (Rust, `server/`) |
 | Frontend | React 19 + TypeScript + Vite + Tailwind CSS 4 |
 | Rich text | [BlockNote](https://www.blocknotejs.org) with a custom wikilink inline-content spec |
 | Raw editor | [CodeMirror 6](https://codemirror.net) |
@@ -183,12 +236,17 @@ and surfaces conflicts in the status bar.
 | Frontmatter | [gray_matter](https://crates.io/crates/gray_matter) (Rust) |
 | Search | walkdir file scan with title-ranked keyword matching (Rust) |
 | Git | System git CLI, shelled out from Rust |
+| Auth (web) | Bearer token via `VAULT_TOKEN` env var, stored in `localStorage` |
 | Tests | cargo test (backend, incl. full-lifecycle integration) + Vitest (frontend) |
 
 The filesystem is the single source of truth. Every change writes to disk via
 Tauri IPC **first**, then updates React state — if the disk write fails, the
 UI never pretends it succeeded. The heavy editor bundles are lazy-loaded, so
 the app shell starts fast and only the editor mode you use is in memory.
+
+The web build swaps the Tauri IPC layer for a fetch-based implementation via
+Vite aliases (`src/lib/ipc.web.ts`) — no other code changes between the
+desktop and web targets.
 
 ```sh
 pnpm test                    # frontend unit tests
@@ -199,7 +257,8 @@ cd src-tauri && cargo test   # backend tests
 
 - **v0.x** — conflict-resolution UI, neighborhood view (link-relationship
   browsing), pinned saved views, in-app update notifications
-- **v1.x** — Windows and Linux builds, Playwright E2E suite, code signing
+- **v1.x** — Windows and Linux builds, Playwright E2E suite, code signing,
+  Android/iOS native shells
 - **v2.0** — MCP server + AI integrations, plugin system, semantic search,
   multi-vault
 
