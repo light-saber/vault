@@ -45,6 +45,8 @@ export function filterEntries(
       return entries.filter((e) => e.noteType !== "type");
     case "inbox":
       return entries.filter((e) => e.noteType === null);
+    case "starred":
+      return entries.filter((e) => e.starred);
     case "changes": {
       const changedPaths = new Set(changed.map((c) => c.path));
       return entries.filter((e) => changedPaths.has(e.path));
@@ -85,6 +87,8 @@ export function filterLabel(filter: Filter, defs: TypeDef[]): string {
       return "All Notes";
     case "inbox":
       return "Inbox";
+    case "starred":
+      return "Starred";
     case "changes":
       return "Changes";
     case "pulse":

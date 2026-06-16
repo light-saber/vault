@@ -19,6 +19,7 @@ pub fn run() {
             vault::create_note,
             vault::delete_note,
             vault::rename_note,
+            vault::toggle_star,
             search::search_vault,
             git::git_status,
             git::git_log,

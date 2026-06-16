@@ -46,6 +46,8 @@ export const ipc = {
     invoke<void>("delete_note", { vault, path }),
   renameNote: (vault: string, path: string, newTitle: string) =>
     invoke<string>("rename_note", { vault, path, newTitle }),
+  toggleStar: (vault: string, path: string) =>
+    invoke<boolean>("toggle_star", { vault, path }),
 
   searchVault: (vault: string, query: string) =>
     invoke<SearchResult[]>("search_vault", { vault, query }),

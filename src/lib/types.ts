@@ -14,6 +14,7 @@ export interface VaultEntry {
   relatedTo: string[];
   has: string[];
   wikilinks: string[];
+  starred: boolean;
 }
 
 export interface NoteContent {
@@ -79,6 +80,7 @@ export const defaultSettings: Settings = {
 export type Filter =
   | { kind: "all" }
   | { kind: "inbox" }
+  | { kind: "starred" }
   | { kind: "changes" }
   | { kind: "pulse" }
   | { kind: "type"; type: string };

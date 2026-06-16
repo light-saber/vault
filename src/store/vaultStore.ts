@@ -58,6 +58,7 @@ interface VaultState {
   createNote: (title?: string, noteType?: string | null) => Promise<void>;
   deleteActive: () => Promise<void>;
   renameActive: (title: string) => Promise<void>;
+  toggleStar: (path: string) => Promise<void>;
   saveBody: (body: string) => Promise<void>;
   saveFrontmatter: (fm: Record<string, unknown>) => Promise<void>;
 
@@ -285,6 +286,20 @@ export const useVault = create<VaultState>((set, get) => {
         lastEditAt: Date.now(),
       }));
       void get().refreshChanges();
+    },
+
+    toggleStar: async (path) => {
+      const vault = get().settings.vaultPath;
+      if (!vault) return;
+      try {
+        const starred = await ipc.toggleStar(vault, path);
+        set((s) => ({
+          entries: s.entries.map((e) => (e.path === path ? { ...e, starred } : e)),
+        }));
+        void get().refreshChanges();
+      } catch {
+        // ignore — star is best-effort
+      }
     },
 
     renameActive: async (title) => {

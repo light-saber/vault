@@ -25,6 +25,7 @@ pub struct VaultEntry {
     pub related_to: Vec<String>,
     pub has: Vec<String>,
     pub wikilinks: Vec<String>,
+    pub starred: bool,
 }
 
 #[derive(Serialize, Debug)]
@@ -105,6 +106,10 @@ pub fn strip_wikilink(raw: &str) -> String {
     let s = s.split('|').next().unwrap_or(s);
     let s = s.split('#').next().unwrap_or(s);
     s.trim().to_string()
+}
+
+fn fm_bool(fm: &Value, key: &str) -> bool {
+    matches!(fm.get(key), Some(Value::Bool(true)))
 }
 
 fn fm_str(fm: &Value, key: &str) -> Option<String> {
@@ -217,6 +222,7 @@ pub fn build_entry(vault: &Path, abs: &Path) -> Option<VaultEntry> {
         related_to: fm_link_list(&fm, "related_to"),
         has: fm_link_list(&fm, "has"),
         wikilinks: extract_wikilinks(&body),
+        starred: fm_bool(&fm, "starred"),
         frontmatter: fm,
         path: rel_str,
     })
@@ -377,6 +383,31 @@ pub fn rename_note(vault: String, path: String, new_title: String) -> Result<Str
         .map_err(|e| e.to_string())?
         .to_string_lossy()
         .replace('\\', "/"))
+}
+
+#[tauri::command]
+pub fn toggle_star(vault: String, path: String) -> Result<bool, String> {
+    let abs = resolve(&vault, &path)?;
+    let content = fs::read_to_string(&abs).map_err(|e| e.to_string())?;
+    let (mut fm, body) = parse_note(&content);
+    let next = !fm_bool(&fm, "starred");
+    if !fm.is_object() {
+        fm = serde_json::json!({});
+    }
+    if next {
+        fm["starred"] = Value::Bool(true);
+    } else if let Some(obj) = fm.as_object_mut() {
+        obj.remove("starred");
+    }
+    let is_empty = fm.as_object().map(|o| o.is_empty()).unwrap_or(true);
+    let new_content = if is_empty {
+        body
+    } else {
+        let yaml = serde_yaml::to_string(&fm).map_err(|e| e.to_string())?;
+        format!("---\n{yaml}---\n\n{body}")
+    };
+    write_atomic(&abs, &new_content)?;
+    Ok(next)
 }
 
 const BUILTIN_TYPES: &[(&str, &str, &str, &str)] = &[

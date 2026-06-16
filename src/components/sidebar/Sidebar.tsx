@@ -5,6 +5,7 @@ import {
   Inbox,
   Library,
   Search,
+  Star,
 } from "lucide-react";
 import { useState } from "react";
 import {
@@ -58,6 +59,13 @@ export function Sidebar() {
           count={notes.filter((e) => e.noteType === null).length}
           active={filter.kind === "inbox"}
           onClick={() => setFilter({ kind: "inbox" })}
+        />
+        <FilterRow
+          icon={<Star size={14} />}
+          label="Starred"
+          count={notes.filter((e) => e.starred).length}
+          active={filter.kind === "starred"}
+          onClick={() => setFilter({ kind: "starred" })}
         />
         <FilterRow
           icon={<GitCommitHorizontal size={14} />}

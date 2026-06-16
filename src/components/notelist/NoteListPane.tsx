@@ -1,4 +1,4 @@
-import { ArrowUpDown, Plus } from "lucide-react";
+import { ArrowUpDown, Plus, Star } from "lucide-react";
 import { relativeDate } from "../../lib/dates";
 import {
   filterEntries,
@@ -30,6 +30,7 @@ export function NoteListPane() {
   const activePath = useVault((s) => s.activePath);
   const openNote = useVault((s) => s.openNote);
   const createNote = useVault((s) => s.createNote);
+  const toggleStar = useVault((s) => s.toggleStar);
 
   if (searchOpen) return <SearchPanel />;
   if (filter.kind === "pulse") return <PulseView />;
@@ -74,6 +75,8 @@ export function NoteListPane() {
           <p className="px-3 pt-8 text-center text-sm text-ink-faint">
             {filter.kind === "changes"
               ? "No uncommitted changes."
+              : filter.kind === "starred"
+              ? "No starred notes yet."
               : "No notes here yet."}
           </p>
         )}
@@ -89,6 +92,7 @@ export function NoteListPane() {
                 void openNote(entry.path);
               }
             }}
+            onToggleStar={() => void toggleStar(entry.path)}
           />
         ))}
       </div>
@@ -100,15 +104,17 @@ function NoteListItem({
   entry,
   active,
   onOpen,
+  onToggleStar,
 }: {
   entry: VaultEntry;
   active: boolean;
   onOpen: (e: React.MouseEvent) => void;
+  onToggleStar: () => void;
 }) {
   return (
     <button
       onClick={onOpen}
-      className={`relative block w-full rounded-lg px-3 py-2 text-left transition-colors ${
+      className={`group relative block w-full rounded-lg px-3 py-2 text-left transition-colors ${
         active ? "bg-paper-sunken" : "hover:bg-paper-deep"
       }`}
     >
@@ -119,8 +125,22 @@ function NoteListItem({
         <span className="min-w-0 flex-1 truncate font-display text-lg font-semibold leading-snug">
           {entry.title}
         </span>
-        <span className="shrink-0 text-2xs tabular-nums text-ink-faint">
-          {relativeDate(entry.modified)}
+        <span className="flex shrink-0 items-center gap-1">
+          <span
+            role="button"
+            onClick={(e) => { e.stopPropagation(); onToggleStar(); }}
+            title={entry.starred ? "Unstar" : "Star"}
+            className={`rounded p-0.5 transition-colors ${
+              entry.starred
+                ? "text-amber-400"
+                : "text-transparent group-hover:text-ink-faint hover:!text-amber-400"
+            }`}
+          >
+            <Star size={12} fill={entry.starred ? "currentColor" : "none"} />
+          </span>
+          <span className="text-2xs tabular-nums text-ink-faint">
+            {relativeDate(entry.modified)}
+          </span>
         </span>
       </span>
       <span className="mt-0.5 flex items-center gap-2">
