@@ -8,7 +8,19 @@ import { CommandPalette } from "../palette/CommandPalette";
 import { QuickOpen } from "../palette/QuickOpen";
 import { SettingsModal } from "../settings/SettingsModal";
 import { Sidebar } from "../sidebar/Sidebar";
+import { MobileLayout } from "./MobileLayout";
 import { StatusBar } from "./StatusBar";
+
+function useIsMobile() {
+  const [mobile, setMobile] = useState(() => window.innerWidth < 768);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const handler = (e: MediaQueryListEvent) => setMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+  return mobile;
+}
 
 interface Widths {
   sidebar: number;
@@ -33,6 +45,11 @@ function loadWidths(): Widths {
 }
 
 export function FourPanelLayout() {
+  const isMobile = useIsMobile();
+  return isMobile ? <MobileLayout /> : <DesktopLayout />;
+}
+
+function DesktopLayout() {
   const inspectorOpen = useVault((s) => s.inspectorOpen);
   const paletteOpen = useVault((s) => s.paletteOpen);
   const quickOpenOpen = useVault((s) => s.quickOpenOpen);

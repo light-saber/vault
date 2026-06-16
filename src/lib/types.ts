@@ -14,7 +14,7 @@ export interface VaultEntry {
   relatedTo: string[];
   has: string[];
   wikilinks: string[];
-  starred: boolean;
+  starred?: boolean;
 }
 
 export interface NoteContent {
